@@ -39,7 +39,7 @@ Make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/Newbie-boy-69/PersonalFinanceSystem.git
 ```
 
 ### 2. Enter the Project Folder
