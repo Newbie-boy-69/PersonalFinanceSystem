@@ -1,32 +1,42 @@
 # Personal Savings and Expense Monitoring System
 
-A web-based personal finance management system built with Laravel and MySQL. It helps users record their income and expenses, manage budgets, track savings goals, and monitor their financial activities.
+A web-based personal finance management system built using Laravel, React, Inertia.js, and MySQL. It helps users manage their income, expenses, budgets, savings goals, and financial activities.
 
 ## Features
 
-- **User Authentication** – Register, log in, and securely manage your account.
-- **Dashboard** – View total income, expenses, current balance, and savings.
+- **User Authentication** – Register, log in, and manage your account.
+- **Dashboard** – View total income, expenses, balance, and savings.
 - **Category Management** – Create and manage income and expense categories.
-- **Transaction Management** – Add, edit, view, and delete financial transactions.
-- **Budget Management** – Set expense budgets and monitor spending.
-- **Savings Goals** – Create savings targets and track progress.
+- **Transaction Management** – Add, edit, view, and delete transactions.
+- **Budget Management** – Set budgets and monitor spending.
+- **Savings Goals** – Create savings targets, add savings, and track progress.
 - **Reports** – View monthly financial summaries, charts, and expense breakdowns.
+- **Account Management** – View account information and log out.
 - **How to Use** – Access instructions for using the system.
 
 ## Technologies Used
 
+**Backend**
 - PHP
 - Laravel
-- Blade Templates
-- MySQL
-- HTML
-- CSS
+
+**Frontend**
+- React
+- Inertia.js
 - JavaScript
+- Tailwind CSS
 - Chart.js
 
-## Requirements
+**Database**
+- MySQL
 
-Make sure you have the following installed:
+**Development Tools**
+- Vite
+- Node.js and npm
+- Composer
+- Git
+
+## Requirements
 
 - PHP
 - Composer
@@ -48,43 +58,34 @@ git clone https://github.com/Newbie-boy-69/PersonalFinanceSystem.git
 cd PersonalFinanceSystem
 ```
 
-### 3. Install PHP Dependencies
+### 3. Install Dependencies
 
 ```bash
 composer install
-```
-
-### 4. Install JavaScript Dependencies
-
-```bash
 npm install
 ```
 
-### 5. Create Your Environment File
-
-For Windows PowerShell:
+### 4. Create the Environment File
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-### 6. Generate the Application Key
+### 5. Generate the Application Key
 
 ```bash
 php artisan key:generate
 ```
 
-### 7. Create the Database
+### 6. Create the Database
 
-Open MySQL or phpMyAdmin and create a database named:
+Create a MySQL database named:
 
-```text
-personal_finance_db
-```
+`personal_finance_db`
 
-### 8. Configure Your Database
+### 7. Configure the Database
 
-Open the `.env` file and make sure your database settings match your local MySQL configuration.
+Update your `.env` file:
 
 ```env
 DB_CONNECTION=mysql
@@ -95,21 +96,21 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Change the username and password if your MySQL setup uses different credentials.
+Adjust the username and password based on your MySQL configuration.
 
-### 9. Run Database Migrations
+### 8. Run Database Migrations
 
 ```bash
 php artisan migrate
 ```
 
-### 10. Build Frontend Assets
+### 9. Build Frontend Assets
 
 ```bash
 npm run build
 ```
 
-### 11. Start the Application
+### 10. Start the Application
 
 ```bash
 composer run dev
@@ -117,16 +118,23 @@ composer run dev
 
 Open your browser and visit:
 
-```text
-http://127.0.0.1:8000
-```
+`http://localhost:8000`
+
+## Project Structure
+
+- `app/` – Laravel backend logic, controllers, and models.
+- `resources/js/` – React application, pages, and layouts.
+- `resources/views/app.blade.php` – Main Inertia application template.
+- `routes/web.php` – Application routes.
+- `database/` – Database migrations and seeders.
+- `public/` – Public assets and compiled frontend files.
 
 ## Important Notes
 
 - Each user has their own financial records.
-- Users must register or log in to access the system.
-- The system requires manual entry of financial transactions.
-- Do not upload your `.env` file or private database credentials to GitHub.
+- Users must log in to access protected features.
+- Financial transactions must be entered manually.
+- Never upload your `.env` file or private database credentials to GitHub.
 - Create a separate database for local testing.
 
 ## Project Purpose
@@ -135,5 +143,6 @@ This project aims to provide a simple and organized way for individuals to monit
 
 ---
 
-**Personal Savings and Expense Monitoring System**  
+**Personal Savings and Expense Monitoring System**
+
 Developed as an academic project.
