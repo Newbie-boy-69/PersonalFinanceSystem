@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ReportController extends Controller
 {
@@ -45,13 +46,13 @@ class ReportController extends Controller
                 return $items->sum('amount');
             });
 
-        return view('reports.index', compact(
-            'month',
-            'transactions',
-            'totalIncome',
-            'totalExpenses',
-            'balance',
-            'expensesByCategory'
-        ));
+        return Inertia::render('Reports/Index', [
+            'month' => $month,
+            'transactions' => $transactions,
+            'totalIncome' => $totalIncome,
+            'totalExpenses' => $totalExpenses,
+            'balance' => $balance,
+            'expensesByCategory' => $expensesByCategory,
+        ]);
     }
 }

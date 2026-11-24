@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SavingsGoal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class SavingsGoalController extends Controller
 {
@@ -20,7 +21,9 @@ class SavingsGoalController extends Controller
                 : 0;
         }
 
-        return view('savings-goals.index', compact('goals'));
+        return Inertia::render('SavingsGoals/Index', [
+            'goals' => $goals,
+        ]);
     }
 
     public function store(Request $request)
@@ -56,5 +59,4 @@ class SavingsGoalController extends Controller
         return redirect()->route('savings-goals.index')
             ->with('success', 'Savings added successfully!');
     }
-
 }
