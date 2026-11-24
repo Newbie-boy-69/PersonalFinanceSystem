@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\SavingsGoal;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -25,11 +26,11 @@ class DashboardController extends Controller
         $totalSavings = SavingsGoal::where('user_id', $userId)
             ->sum('current_amount');
 
-        return view('auth.dashboard', compact(
-            'totalIncome',
-            'totalExpenses',
-            'currentBalance',
-            'totalSavings'
-        ));
+        return Inertia::render('Dashboard', [
+            'totalIncome' => $totalIncome,
+            'totalExpenses' => $totalExpenses,
+            'currentBalance' => $currentBalance,
+            'totalSavings' => $totalSavings,
+        ]);
     }
 }

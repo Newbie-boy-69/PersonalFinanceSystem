@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
@@ -15,7 +16,9 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('categories.index', compact('categories'));
+        return Inertia::render('Categories/Index', [
+            'categories' => $categories,
+        ]);
     }
 
     public function store(Request $request)

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TransactionController extends Controller
 {
@@ -16,7 +17,9 @@ class TransactionController extends Controller
             ->orderBy('transaction_date', 'desc')
             ->get();
 
-        return view('transactions.index', compact('transactions'));
+        return Inertia::render('Transactions/Index', [
+            'transactions' => $transactions,
+        ]);
     }
 
     public function create()
@@ -25,7 +28,9 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('transactions.create', compact('categories'));
+        return Inertia::render('Transactions/Create', [
+            'categories' => $categories,
+        ]);
     }
 
     public function store(Request $request)
@@ -68,7 +73,10 @@ class TransactionController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('transactions.edit', compact('transaction', 'categories'));
+        return Inertia::render('Transactions/Edit', [
+            'transaction' => $transaction,
+            'categories' => $categories,
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -112,5 +120,4 @@ class TransactionController extends Controller
         return redirect()->route('transactions.index')
             ->with('success', 'Transaction deleted successfully!');
     }
-
 }

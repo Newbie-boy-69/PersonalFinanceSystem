@@ -7,34 +7,44 @@ use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class BudgetController extends Controller
 {
-    
-public function index()
-{
-    $budgets = Budget::where('user_id', Auth::id())
-        ->with('category')
-        ->orderBy('start_date', 'desc')
-        ->get();
+    public function index()
+    {
+        $userId = Auth::id();
 
-    foreach ($budgets as $budget) {
-        $totalSpent = Transaction::where('user_id', Auth::id())
-            ->where('category_id', $budget->category_id)
+        $budgets = Budget::where('user_id', $userId)
+            ->with('category')
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+        foreach ($budgets as $budget) {
+            $totalSpent = Transaction::where('user_id', $userId)
+                ->where('category_id', $budget->category_id)
+                ->where('type', 'expense')
+                ->whereBetween('transaction_date', [
+                    $budget->start_date,
+                    $budget->end_date,
+                ])
+                ->sum('amount');
+
+            $budget->total_spent = $totalSpent;
+            $budget->remaining = $budget->amount - $totalSpent;
+            $budget->is_exceeded = $totalSpent > $budget->amount;
+        }
+
+        $categories = Category::where('user_id', $userId)
             ->where('type', 'expense')
-            ->whereBetween('transaction_date', [
-                $budget->start_date,
-                $budget->end_date
-            ])
-            ->sum('amount');
+            ->orderBy('name')
+            ->get();
 
-        $budget->total_spent = $totalSpent;
-        $budget->remaining = $budget->amount - $totalSpent;
-        $budget->is_exceeded = $totalSpent > $budget->amount;
+        return Inertia::render('Budgets/Index', [
+            'budgets' => $budgets,
+            'categories' => $categories,
+        ]);
     }
-
-    return view('budgets.index', compact('budgets'));
-}
 
     public function store(Request $request)
     {
