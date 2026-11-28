@@ -1,85 +1,54 @@
 import { useState } from 'react';
+import { usePage, router } from '@inertiajs/react';
+
+const links = [
+    { label: 'Dashboard', href: '/dashboard', icon: '◈' },
+    { label: 'Transactions', href: '/transactions', icon: '↔' },
+    { label: 'Categories', href: '/categories', icon: '◉' },
+    { label: 'Budgets', href: '/budgets', icon: '▤' },
+    { label: 'Savings Goals', href: '/savings-goals', icon: '◷' },
+    { label: 'Reports', href: '/reports', icon: '▥' },
+];
 
 export default function AppLayout({ children }) {
-    const [menuOpen, setMenuOpen] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const { auth } = usePage().props;
+    const user = auth?.user;
+    const path = window.location.pathname;
+    const initials = (user?.name || 'User').split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
 
-    const links = [
-        { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Categories', href: '/categories' },
-        { label: 'Transactions', href: '/transactions' },
-        { label: 'Budgets', href: '/budgets' },
-        { label: 'Savings', href: '/savings-goals' },
-        { label: 'Reports', href: '/reports' },
-    ];
-
-    return (
-        <div className="min-h-screen flex flex-col bg-[#f4f6f9] text-[#333]">
-
-            {/* Navigation Bar */}
-            <nav className="relative z-20 bg-slate-800 text-white px-6 py-4 flex items-center gap-3">
-
-                <h2 className="text-xl font-bold whitespace-nowrap">
-                    Personal Finance System
-                </h2>
-
-                <div className="ml-auto flex items-center gap-2">
-
-                    <a
-                        href="/how-to-use"
-                        className="px-3 py-2 rounded hover:bg-slate-700 whitespace-nowrap"
-                    >
-                        How to Use
-                    </a>
-
-                    {/* Hamburger Button */}
-                    <button
-                        type="button"
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        className="border border-slate-500 rounded px-3 py-2 text-xl hover:bg-slate-700"
-                        aria-label="Toggle navigation menu"
-                    >
-                        {menuOpen ? '✕' : '☰'}
-                    </button>
-
-                    <a
-                        href="/account"
-                        className="border border-slate-500 rounded px-3 py-2 whitespace-nowrap hover:bg-slate-700"
-                    >
-                        Account
-                    </a>
-
-                </div>
-
-                {/* Dropdown Menu */}
-                {menuOpen && (
-                    <div className="absolute top-full right-6 mt-1 w-56 bg-slate-800 border border-slate-600 rounded-lg shadow-xl overflow-hidden">
-
-                        {links.map((link) => (
-                            <a
-                                key={link.href}
-                                href={link.href}
-                                onClick={() => setMenuOpen(false)}
-                                className="block px-4 py-3 hover:bg-slate-700 hover:text-sky-400"
-                            >
-                                {link.label}
-                            </a>
-                        ))}
-
-                    </div>
-                )}
-
+    const sidebar = (
+        <>
+            <div className="finance-brand">
+                <div className="finance-brand-mark">₱</div>
+                <div><strong>Financia</strong><span>PERSONAL FINANCE</span></div>
+            </div>
+            <div className="finance-nav-label">WORKSPACE</div>
+            <nav className="finance-nav">
+                {links.map((link) => {
+                    const active = path === link.href || (link.href !== '/dashboard' && path.startsWith(link.href));
+                    return <a key={link.href} href={link.href} className={`finance-nav-link ${active ? 'active' : ''}`} onClick={() => setMobileOpen(false)}>
+                        <span className="finance-nav-icon">{link.icon}</span><span>{link.label}</span>{active && <span className="finance-nav-dot" />}
+                    </a>;
+                })}
             </nav>
-
-            {/* Main Content */}
-            <main className="w-full max-w-[1200px] mx-auto my-8 px-6 flex-1">
-                {children}
-            </main>
-
-            {/* Footer */}
-            <footer className="bg-slate-800 text-white text-center p-5 mt-auto">
-                Personal Savings and Expense Monitoring System
-            </footer>
-
-        </div>
+            <div className="finance-sidebar-bottom">
+                <a href="/how-to-use" className={`finance-nav-link ${path === '/how-to-use' ? 'active' : ''}`}><span className="finance-nav-icon">?</span><span>How to Use</span></a>
+                <a href="/account" className={`finance-nav-link ${path === '/account' ? 'active' : ''}`}><span className="finance-nav-icon">⚙</span><span>Account</span></a>
+                <button type="button" onClick={() => router.post('/logout')} className="finance-nav-link finance-logout-link"><span className="finance-nav-icon">↪</span><span>Log out</span></button>
+                <div className="finance-user-card"><div className="finance-avatar">{user?.profile_photo_url ? <img src={user.profile_photo_url} alt="Profile" className="h-full w-full rounded-full object-cover" /> : initials}</div><div className="finance-user-info"><strong>{user?.name || 'Account'}</strong><span>Personal account</span></div><a href="/account" className="finance-user-more" aria-label="Account settings">···</a></div>
+            </div>
+        </>
     );
+
+    return <div className="finance-shell">
+        <aside className="finance-sidebar">{sidebar}</aside>
+        {mobileOpen && <div className="finance-mobile-backdrop" onClick={() => setMobileOpen(false)} />}
+        <aside className={`finance-mobile-sidebar ${mobileOpen ? 'open' : ''}`}>{sidebar}</aside>
+        <div className="finance-main-shell">
+            <header className="finance-topbar"><button className="finance-menu-button" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle sidebar">☰</button><div className="finance-topbar-title">Personal Finance</div><div className="finance-topbar-actions"><span className="finance-topbar-date">Your money, organized.</span><a href="/account" className="finance-top-avatar">{user?.profile_photo_url ? <img src={user.profile_photo_url} alt="Profile" className="h-full w-full rounded-full object-cover" /> : initials}</a></div></header>
+            <main className="finance-content">{children}</main>
+            <footer className="finance-footer">Personal Finance System <span>·</span> Stay mindful. Spend wisely.</footer>
+        </div>
+    </div>;
 }
