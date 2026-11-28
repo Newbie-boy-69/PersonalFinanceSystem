@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -11,8 +12,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return Inertia::render('Welcome');
+})->name('welcome');
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
@@ -45,6 +46,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/account', function () {
         return Inertia::render('Account');
     })->name('account');
+
+    Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+    Route::delete('/account/profile-photo', [AccountController::class, 'removePhoto'])->name('account.photo.remove');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // How to Use
     Route::get('/how-to-use', function () {

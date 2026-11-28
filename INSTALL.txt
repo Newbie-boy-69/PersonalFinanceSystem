@@ -1,0 +1,27 @@
+PERSONAL FINANCE SYSTEM - WELCOME LANDING PAGE
+
+1. Copy resources/js/Pages/Welcome.jsx into the same path in your project.
+
+2. Open routes/web.php. Find the current root route:
+
+   Route::get('/', function () {
+       return redirect()->route('login');
+   });
+
+   Replace it with:
+
+   Route::get('/', function () {
+       return Inertia::render('Welcome');
+   })->name('welcome');
+
+   Keep the existing `use Inertia\Inertia;` import at the top of the file.
+
+3. From your project folder, run:
+
+   npm.cmd run build
+   php artisan optimize:clear
+   php artisan serve
+
+4. Visit http://127.0.0.1:8000/ to see the introduction page. The Login and Get started buttons both open /login.
+
+This does not replace or modify the existing Login.jsx or authentication backend.

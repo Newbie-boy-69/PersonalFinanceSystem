@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
                         'name' => $request->user()->name,
 'email' => $request->user()->email,
 'id' => $request->user()->id,
+'profile_photo_url' => $request->user()->profile_photo_path ? asset('storage/'.$request->user()->profile_photo_path) : null,
                     ]
                     : null,
             ],
@@ -44,6 +45,8 @@ class HandleInertiaRequests extends Middleware
             // Flash messages
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
+                'status' => fn () => $request->session()->get('status'),
+                'error' => fn () => $request->session()->get('error'),
             ],
         ];
     }
