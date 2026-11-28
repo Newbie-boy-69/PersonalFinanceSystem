@@ -1,8 +1,15 @@
-import { useForm } from '@inertiajs/react';
+import { useId } from 'react';
+import { useForm, Head } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
+import PageHeader from '../../Components/PageHeader';
+import Card from '../../Components/Card';
+import Input from '../../Components/Input';
+import Select from '../../Components/Select';
+import Button from '../../Components/Button';
 
-export default function Create({ categories }) {
+export default function Create({ categories = [] }) {
     const today = new Date().toLocaleDateString('en-CA');
+    const descriptionId = useId();
 
     const { data, setData, post, processing, errors } = useForm({
         title: '',
@@ -17,6 +24,16 @@ export default function Create({ categories }) {
         (category) => category.type === data.type
     );
 
+    const categoryOptions = filteredCategories.map((category) => ({
+        value: category.id,
+        label: `${category.name} (${category.type.charAt(0).toUpperCase() + category.type.slice(1)})`,
+    }));
+
+    const typeOptions = [
+        { value: 'income', label: 'Income' },
+        { value: 'expense', label: 'Expense' },
+    ];
+
     const handleTypeChange = (e) => {
         setData((previousData) => ({
             ...previousData,
@@ -30,175 +47,153 @@ export default function Create({ categories }) {
         post('/transactions');
     };
 
+    const descriptionErrorId = errors.description ? `${descriptionId}-error` : undefined;
+
     return (
         <AppLayout>
-            <div>
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        Add New Transaction
-                    </h1>
-                    <p className="text-gray-500 mt-2">
-                        Record your income or expenses.
-                    </p>
-                </div>
+            <Head title="Add Transaction" />
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="mx-auto max-w-4xl space-y-6 text-[#17212B]">
+                <PageHeader
+                    title="Add New Transaction"
+                    description="Record your income or expenses."
+                    className="mb-0"
+                    action={
+                        <Button
+                            href="/transactions"
+                            variant="secondary"
+                            size="sm"
+                            icon={
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    aria-hidden="true"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                                </svg>
+                            }
+                        >
+                            Back to Transactions
+                        </Button>
+                    }
+                />
 
-                    <a
-                        href="/transactions"
-                        className="text-blue-600 hover:text-blue-800 font-semibold"
-                    >
-                        ← Back to Transactions
-                    </a>
+                <Card className="border-[#E2E8F0]">
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <Input
+                            id="title"
+                            label="Transaction Title"
+                            type="text"
+                            value={data.title}
+                            onChange={(e) => setData('title', e.target.value)}
+                            placeholder="e.g. Monthly Allowance"
+                            error={errors.title}
+                            required
+                        />
 
-                    <hr className="my-6 border-gray-200" />
-
-                    <form onSubmit={handleSubmit}>
-
-                        {/* Transaction Title */}
-                        <div className="mb-5">
-                            <label htmlFor="title" className="block font-semibold text-gray-700 mb-2">
-                                Transaction Title
-                            </label>
-
-                            <input
-                                type="text"
-                                id="title"
-                                value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
-                                placeholder="e.g. Monthly Allowance"
-                                required
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-
-                            {errors.title && (
-                                <p className="text-red-600 text-sm mt-2">{errors.title}</p>
-                            )}
-                        </div>
-
-                        {/* Transaction Type */}
-                        <div className="mb-5">
-                            <label htmlFor="type" className="block font-semibold text-gray-700 mb-2">
-                                Transaction Type
-                            </label>
-
-                            <select
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <Select
                                 id="type"
+                                label="Transaction Type"
                                 value={data.type}
                                 onChange={handleTypeChange}
+                                options={typeOptions}
+                                placeholder="Select Type"
+                                error={errors.type}
                                 required
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="">Select Type</option>
-                                <option value="income">Income</option>
-                                <option value="expense">Expense</option>
-                            </select>
+                            />
 
-                            {errors.type && (
-                                <p className="text-red-600 text-sm mt-2">{errors.type}</p>
-                            )}
-                        </div>
-
-                        {/* Amount */}
-                        <div className="mb-5">
-                            <label htmlFor="amount" className="block font-semibold text-gray-700 mb-2">
-                                Amount (₱)
-                            </label>
-
-                            <input
-                                type="number"
+                            <Input
                                 id="amount"
+                                label="Amount (₱)"
+                                type="number"
                                 step="0.01"
                                 min="0.01"
                                 value={data.amount}
                                 onChange={(e) => setData('amount', e.target.value)}
                                 placeholder="0.00"
+                                error={errors.amount}
                                 required
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-
-                            {errors.amount && (
-                                <p className="text-red-600 text-sm mt-2">{errors.amount}</p>
-                            )}
                         </div>
 
-                        {/* Category */}
-                        <div className="mb-5">
-                            <label htmlFor="category_id" className="block font-semibold text-gray-700 mb-2">
-                                Category
-                            </label>
-
-                            <select
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <Select
                                 id="category_id"
+                                label="Category"
                                 value={data.category_id}
                                 onChange={(e) => setData('category_id', e.target.value)}
+                                options={categoryOptions}
+                                placeholder="No Category"
                                 disabled={!data.type}
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-                            >
-                                <option value="">No Category</option>
-
-                                {filteredCategories.map((category) => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name} ({category.type.charAt(0).toUpperCase() + category.type.slice(1)})
-                                    </option>
-                                ))}
-                            </select>
-
-                            {errors.category_id && (
-                                <p className="text-red-600 text-sm mt-2">{errors.category_id}</p>
-                            )}
-                        </div>
-
-                        {/* Transaction Date */}
-                        <div className="mb-5">
-                            <label htmlFor="transaction_date" className="block font-semibold text-gray-700 mb-2">
-                                Transaction Date
-                            </label>
-
-                            <input
-                                type="date"
-                                id="transaction_date"
-                                value={data.transaction_date}
-                                onChange={(e) => setData('transaction_date', e.target.value)}
-                                required
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                hint={!data.type ? 'Select a transaction type first to choose a category.' : undefined}
+                                error={errors.category_id}
                             />
 
-                            {errors.transaction_date && (
-                                <p className="text-red-600 text-sm mt-2">{errors.transaction_date}</p>
-                            )}
+                            <Input
+                                id="transaction_date"
+                                label="Transaction Date"
+                                type="date"
+                                value={data.transaction_date}
+                                onChange={(e) => setData('transaction_date', e.target.value)}
+                                error={errors.transaction_date}
+                                required
+                            />
                         </div>
 
-                        {/* Description */}
-                        <div className="mb-6">
-                            <label htmlFor="description" className="block font-semibold text-gray-700 mb-2">
+                        <div className="space-y-1.5">
+                            <label
+                                htmlFor={descriptionId}
+                                className="block text-sm font-semibold text-slate-700"
+                            >
                                 Description (Optional)
                             </label>
 
                             <textarea
-                                id="description"
+                                id={descriptionId}
                                 rows="4"
                                 value={data.description}
                                 onChange={(e) => setData('description', e.target.value)}
                                 placeholder="Add additional details..."
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                aria-invalid={errors.description ? 'true' : 'false'}
+                                aria-describedby={descriptionErrorId}
+                                className={`w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-0 ${
+                                    errors.description
+                                        ? 'border-rose-300 focus:border-rose-600 focus:ring-rose-100'
+                                        : 'border-slate-300 focus:border-teal-700 focus:ring-teal-100'
+                                }`}
                             />
 
                             {errors.description && (
-                                <p className="text-red-600 text-sm mt-2">{errors.description}</p>
+                                <p id={descriptionErrorId} className="text-xs text-rose-600 font-medium mt-1" role="alert">
+                                    {errors.description}
+                                </p>
                             )}
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold px-5 py-3 rounded-lg transition"
-                        >
-                            {processing ? 'Saving...' : 'Save Transaction'}
-                        </button>
+                        <div className="pt-2 border-t border-[#E2E8F0] flex flex-wrap items-center justify-end gap-3">
+                            <Button
+                                href="/transactions"
+                                variant="secondary"
+                                disabled={processing}
+                            >
+                                Cancel
+                            </Button>
 
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                loading={processing}
+                                className="!bg-[#18263A] hover:!bg-[#263B55] focus:!ring-[#18263A]"
+                            >
+                                {processing ? 'Saving...' : 'Save Transaction'}
+                            </Button>
+                        </div>
                     </form>
-                </div>
+                </Card>
             </div>
         </AppLayout>
     );

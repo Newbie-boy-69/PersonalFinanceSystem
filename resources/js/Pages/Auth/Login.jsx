@@ -1,4 +1,4 @@
-import { useForm, Link } from '@inertiajs/react';
+import { useForm, Link, Head } from '@inertiajs/react';
 import AuthLayout from '../../Layouts/AuthLayout';
 
 export default function Login() {
@@ -14,6 +14,8 @@ export default function Login() {
 
     return (
         <AuthLayout>
+            <Head title="Login" />
+
             <h2 className="text-slate-800 text-xl font-bold mb-2">
                 Welcome Back!
             </h2>

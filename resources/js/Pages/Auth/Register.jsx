@@ -1,4 +1,4 @@
-import { useForm, Link } from '@inertiajs/react';
+import { useForm, Link, Head } from '@inertiajs/react';
 import AuthLayout from '../../Layouts/AuthLayout';
 
 export default function Register() {
@@ -16,6 +16,8 @@ export default function Register() {
 
     return (
         <AuthLayout>
+            <Head title="Register" />
+
             <h2 className="text-slate-800 text-xl font-bold mb-2">
                 Create Your Account
             </h2>

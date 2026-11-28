@@ -1,17 +1,14 @@
-
-import { usePage } from '@inertiajs/react';
+import { usePage, Head, router } from '@inertiajs/react';
 import AppLayout from '../Layouts/AppLayout';
 
 export default function Account() {
     const { auth } = usePage().props;
     const user = auth?.user;
 
-    const csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        ?.getAttribute('content');
-
     return (
         <AppLayout>
+            <Head title="My Account" />
+
             <div>
                 <h1 className="text-3xl font-bold mb-2">My Account</h1>
 
@@ -59,20 +56,13 @@ export default function Account() {
                         Manage your current session.
                     </p>
 
-                    <form method="POST" action="/logout">
-                        <input
-                            type="hidden"
-                            name="_token"
-                            value={csrfToken || ''}
-                        />
-
-                        <button
-                            type="submit"
-                            className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
-                        >
-                            Log Out
-                        </button>
-                    </form>
+                    <button
+                        type="button"
+                        onClick={() => router.post('/logout')}
+                        className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700"
+                    >
+                        Log Out
+                    </button>
                 </div>
             </div>
         </AppLayout>

@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, Head } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 
 function SavingsGoalCard({ goal, formatCurrency }) {
@@ -125,6 +125,8 @@ export default function Index({ goals }) {
 
     return (
         <AppLayout>
+            <Head title="Savings Goals" />
+
             <div>
                 <h1 className="text-3xl font-bold mb-2">Savings Goals</h1>
                 <p className="text-gray-500 mb-8">

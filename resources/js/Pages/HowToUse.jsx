@@ -1,3 +1,4 @@
+import { Head } from '@inertiajs/react';
 import AppLayout from '../Layouts/AppLayout';
 
 const sections = [
@@ -87,6 +88,8 @@ const sections = [
 export default function HowToUse() {
     return (
         <AppLayout>
+            <Head title="How to Use" />
+
             <div>
                 <h1 className="text-3xl font-bold mb-2">
                     How to Use the System

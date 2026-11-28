@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, Head } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 
 export default function Index({ categories }) {
@@ -17,6 +17,8 @@ export default function Index({ categories }) {
 
     return (
         <AppLayout>
+            <Head title="Categories" />
+
             <div>
                 {/* Page Heading */}
                 <div className="mb-8">

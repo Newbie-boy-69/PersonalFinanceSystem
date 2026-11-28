@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
-import { router } from '@inertiajs/react';
+import { router, Head } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 
 Chart.register(...registerables);
@@ -153,6 +153,8 @@ export default function Index({
 
     return (
         <AppLayout>
+            <Head title="Reports" />
+
             <div>
                 <h1 className="text-3xl font-bold mb-2">
                     Financial Reports
